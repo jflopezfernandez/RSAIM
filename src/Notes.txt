@@ -1,0 +1,28 @@
+To Receive messages
+  Generate Public Key and Private Key
+  Send Public Key
+  Receive message
+  Decrypt message with Private Key
+To Send message
+  Receive public Key
+  Encrypt message with Public Key
+  Send message
+
+Open Application
+  Set Other's Public Key
+    Set exponent
+    Set modulus
+      Set flag1
+  Get Own Public Key
+    Print exponent and modulus
+      set flag2
+  Send message
+    if flag1 not set, error
+    else,
+      User types message
+      print cipher text
+  Receive message
+    if flag2 not set, error
+    else,
+      User types cipher text
+      Print message
