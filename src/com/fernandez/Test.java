@@ -67,34 +67,6 @@ public class Test {
 			}
 
 		} while (scanner.hasNextLine());
-
-		// final Random rnd = new Random(23434);
-		// final int bits = 100;
-		// final BigInteger p = BigInteger.probablePrime(bits, rnd);
-		// final BigInteger q = BigInteger.probablePrime(bits, rnd);
-		// final BigInteger totient = p.subtract(BigInteger.ONE).multiply(q.subtract(BigInteger.ONE));
-		// final BigInteger e = BigInteger.probablePrime(bits, rnd);
-		// final BigInteger d = e.modInverse(totient);
-		// final BigInteger product = p.multiply(q);
-		//
-		// final Scanner in = new Scanner(System.in);
-		//
-		// while (in.hasNextLine()) {
-		//     final String[] input = in.nextLine().split("\\s+");
-		//
-		//     // Exit if the user doesn't enter anything.
-		//     if (input[0].length() == 0) { break; }
-		//
-		//     if (input[0].equals("message")) {
-		//         final BigInteger encrypted = encrypt(new BigInteger(input[1]),
-		//                                              e, product);
-		//         System.out.printf("cipher  %s%n", encrypted.toString());
-		//     } else {
-		//         final BigInteger decrypted = decrypt(new BigInteger(input[1]),
-		//                                              d, product);
-		//         System.out.printf("message %s%n", decrypted.toString());
-		//     }
-		// }
 	}
 
 	private static void printMenu() {
@@ -147,13 +119,11 @@ public class Test {
 		System.exit(exitCode.getValue());
 	}
 
-	// private static BigInteger decrypt (final BigInteger cipher, final BigInteger d,
-	//                                   final BigInteger product) {
-	//     return cipher.modPow(d, product);
-	// }
-	//
-	// private static BigInteger encrypt (final BigInteger message, final BigInteger e,
-	//                                   final BigInteger product) {
-	//     return message.modPow(e, product);
-	// }
+	private static BigInteger decrypt (final BigInteger cipher, final BigInteger d, final BigInteger product) {
+		return cipher.modPow(d, product);
+	}
+
+	private static BigInteger encrypt (final BigInteger message, final BigInteger e, final BigInteger product) {
+		return message.modPow(e, product);
+	}
 }

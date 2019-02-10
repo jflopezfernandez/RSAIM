@@ -52,7 +52,7 @@ public class Encryptor implements Runnable {
 		final BigInteger p = BigInteger.probablePrime(bits, random);
 		final BigInteger q = BigInteger.probablePrime(bits, random);
 		final BigInteger totient = p.subtract(BigInteger.ONE).multiply(q.subtract(BigInteger.ONE));
-		final BigInteger e = BigInteger.probablePrime(bits, rnd);
+		final BigInteger e = BigInteger.probablePrime(bits, random);
 		final BigInteger d = e.modInverse(totient);
 		final BigInteger product = p.multiply(q);
 
