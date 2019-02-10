@@ -9,11 +9,8 @@ public class Encryptor implements Runnable {
 
 	private long seed;
 
-	private Random random;
-	private int bits;
-
-	private BigInteger publicKey;
-	private BigInteger privateKey;
+	private static Random random = new Random(defaultSeed);
+	private static int bits = 100;
 
 	public Encryptor() {
 		setSeed(defaultSeed);
@@ -36,11 +33,13 @@ public class Encryptor implements Runnable {
 	private void seedRandomNumberGenerator() {
 		random = new Random(this.seed);
 	}
-
+	/*
+	private BigInteger publicKey;
+	private BigInteger privateKey;
 	private void setKey(BigInteger key, BigInteger exponent) {
 		key = exponent;
 	}
-
+	*/
 	/**
 	 * TODO: refactor generateKeys()
 	 * Generates Key Pair
@@ -48,25 +47,33 @@ public class Encryptor implements Runnable {
 	 * Saves the private key for internal use
 	 *
 	 */
-	public void generateKeys() {
+	public static KeyPair generateKeys() {
 		final BigInteger p = BigInteger.probablePrime(bits, random);
 		final BigInteger q = BigInteger.probablePrime(bits, random);
 		final BigInteger totient = p.subtract(BigInteger.ONE).multiply(q.subtract(BigInteger.ONE));
 		final BigInteger e = BigInteger.probablePrime(bits, random);
 		final BigInteger d = e.modInverse(totient);
 		final BigInteger product = p.multiply(q);
-
+		/*
 		setKey(publicKey,  e);
 		setKey(privateKey, d);
+		*/
+		return new KeyPair(new Key(e, product), new Key(d, product));
 	}
 
-	private void encrypt(BigInteger message) {
+	public static BigInteger encrypt(Key recipient, BigInteger message) {
 		// TODO: Re-implement encrypt()
-		// publicKey.getTransformedValue(message);
+		System.out.printf("Plain  text: %s%n", message.toString());
+		BigInteger cipher = recipient.getTransformedValue(message);
+		System.out.printf("Cipher text: %s%n", cipher.toString());
+		return cipher;
 	}
 
-	private void decrypt() {
+	public static BigInteger decrypt(Key recipient, BigInteger cipher) {
 		// TODO: Re-implement decrypt()
-		// privateKey.getTransformedValue(message);
+		System.out.printf("Cipher text: %s%n", cipher.toString());
+		BigInteger message = recipient.getTransformedValue(cipher);
+		System.out.printf("Plain  text: %s%n", message.toString());
+		return message;
 	}
 }

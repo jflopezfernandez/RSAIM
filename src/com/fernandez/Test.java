@@ -9,64 +9,16 @@ import java.util.Scanner;
 
 public class Test {
 
-	private static Version CurrentVersion;
+	private static com.fernandez.app.Version CurrentVersion;
 
 	public static void main(final String[] args) {
-		Scanner scanner = null;
-
-		do {
-			printMenu();
-
-			scanner = new Scanner(System.in);
-
-			String[] userInput = scanner.nextLine().split(" ");
-
-			if (userInput[0].length() == 0) {
-				exit(ExitCode.SUCCESS);
-			}
-
-			System.out.println("User input: " + userInput[0]);
-
-			switch (userInput[0])
-			{
-				case "1":
-				case "encrypt": {
-					// TODO: Call encrypt();
-					System.out.println("<Encrypt>");
-				} break;
-
-				case "2":
-				case "decrypt": {
-					//decrypt();
-					System.out.println("<Decrypt>");
-				} break;
-
-				case "3":
-				case "help": {
-					printHelp();
-					exit(ExitCode.SUCCESS);
-				} break;
-
-				case "4":
-				case "version": {
-					// TODO: Implement printVersion();
-					System.out.println("<Print Version>");
-					exit(ExitCode.SUCCESS);
-				} break;
-
-				case "exit": {
-					exit(ExitCode.SUCCESS);
-				} break;
-
-				default: {
-					// TODO: Implement printVersion();
-					System.out.println("<Print Version>");
-					printHelp();
-					exit(ExitCode.SUCCESS);
-				}
-			}
-
-		} while (scanner.hasNextLine());
+		System.out.println("Generating Key Pair\n");
+		KeyPair one = Encryptor.generateKeys();
+		System.out.println(one.toString());
+		System.out.println("Encrypting Message");
+		BigInteger result = Encryptor.encrypt(one.getPublicKey(), BigInteger.valueOf(1234567890));
+		System.out.println("\nDecrypting Result");
+		Encryptor.decrypt(one.getPrivateKey(), result);
 	}
 
 	private static void printMenu() {
