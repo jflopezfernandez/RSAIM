@@ -1,10 +1,13 @@
 package com.fernandez.ui;
 
+import com.sun.nio.sctp.InvalidStreamException;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.io.*;
 import java.net.*;
 import java.net.http.*;
+import java.nio.charset.StandardCharsets;
 import javax.swing.*;
 
 public class Client extends JFrame {
@@ -18,8 +21,8 @@ public class Client extends JFrame {
 	private ServerSocket serverSocket;
 	private Socket clientSocket;
 
-	private int DefaultServerPort = 27015;
-	private int DefaultMaxQueue = 100;
+	private static int DefaultServerPort = 27015;
+	private static int DefaultMaxQueue = 100;
 
 	public Client() {
 		super("RSAIM");
@@ -38,7 +41,6 @@ public class Client extends JFrame {
 					}
 				}
 		);
-
 		add(MessageText, BorderLayout.NORTH);
 
 		// Configure message history.
@@ -60,24 +62,34 @@ public class Client extends JFrame {
 					setupStreams();
 					activeConversation();
 				} catch (EOFException eofException) {
-					System.err.println("Terminating connection...");
+					showMessage("Terminating connection...");
+				} catch (Exception exception) {
+					showMessage(String.format("%s\n", exception.getStackTrace()));
+					exception.printStackTrace();
 				} finally {
 					shutdownServer();
 				}
 			}
 		} catch (IOException ioException) {
-			System.err.println(ioException.getLocalizedMessage());
+			ioException.printStackTrace();
 		}
 	}
 
+	/**
+	 *
+	 * @param message
+	 *
+	 * @exception StreamCorruptedException
+	 */
 	private void sendMessage(String message) {
 		try {
-			outputStream.writeObject("[SERVER]: " + message);
+			outputStream.writeObject(message);
 			outputStream.flush();
 
 			showMessage("[SERVER]: " + message);
 		} catch (IOException ioException) {
-			MessageHistory.append("[ERROR]: " + ioException.getLocalizedMessage());
+			showMessage("[ERROR]: " + ioException.getLocalizedMessage());
+			ioException.printStackTrace();
 		}
 	}
 
@@ -86,7 +98,7 @@ public class Client extends JFrame {
 			new Runnable() {
 				@Override
 				public void run() {
-					MessageHistory.append(message);
+					MessageHistory.append(String.format("%s\n", message));
 				}
 			}
 		);
@@ -97,9 +109,9 @@ public class Client extends JFrame {
 	}
 
 	private void waitForConnection() throws IOException {
-		System.out.println("Waiting for client connection...");
+		showMessage("Waiting for client connection...");
 		clientSocket = serverSocket.accept();
-		System.out.println("Now connected to " + clientSocket.getInetAddress());
+		showMessage("Now connected to " + clientSocket.getInetAddress());
 	}
 
 	private void setupStreams() throws IOException {
@@ -115,29 +127,45 @@ public class Client extends JFrame {
 
 	private void activeConversation() throws IOException {
 		String message = "You are now connected.";
-		sendMessage("[SERVER]: " + message);
-		MessageText.setEditable(true);
+		sendMessage(message + "\n");
+		enableMessageTextField(true);
 
 		do {
 			try {
+				/**
+				 * ************************************
+				 */
 				message = (String) inputStream.readObject();
 				showMessage("[CLIENT]: " + message);
 			} catch (ClassNotFoundException classNotFoundException) {
 				showMessage("[ERROR]: " + classNotFoundException.getLocalizedMessage());
+			} catch (InvalidStreamException invalidStreamException) {
+				showMessage("[ERROR]: " + invalidStreamException.getLocalizedMessage());
+				invalidStreamException.printStackTrace();
 			}
 		} while (!message.equalsIgnoreCase("EXIT"));
 	}
 
 	private void shutdownServer() {
 		showMessage("[SERVER]: Closing connections...");
-		MessageText.setEditable(false);
+		enableMessageTextField(false);
 
 		try {
 			outputStream.close();
 			outputStream.close();
 			clientSocket.close();
 		} catch (IOException ioException) {
-			System.out.println("[ERROR]: " + ioException.getLocalizedMessage());
+			ioException.printStackTrace();
 		}
+	}
+
+	private void enableMessageTextField(boolean enable) {
+		SwingUtilities.invokeLater(
+			new Runnable() {
+				public void run() {
+					MessageText.setEditable(enable);
+				}
+			}
+		);
 	}
 }
