@@ -8,11 +8,8 @@ public class Encryptor implements Runnable {
 	private long defaultSeed = 23434;
 	private long seed;
 
-	private final Random random;
-	private final int bits;
-
-	//private final PublicKey publicKey;
-	//private final PrivateKey privateKey;
+	private Random random;
+	private int bits;
 
 	private BigInteger publicKey;
 	private BigInteger privateKey;
