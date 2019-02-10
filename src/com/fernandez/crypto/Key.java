@@ -4,13 +4,18 @@ import java.math.BigInteger;
 
 public class Key {
 
-	protected final BigInteger publicKey;
-	protected final BigInteger privateKey;
-	protected final BigInteger modulus;
+	protected BigInteger exponent = BigInteger.ZERO;
+	protected BigInteger modulus  = BigInteger.ZERO;
 
-	public BigInteger getExponent();
+	public Key() {
+		// Default constructor
+	}
 
-	public BigInteger value(BigInteger message) {
+	public BigInteger getExponent() {
+		return this.exponent;
+	}
+
+	public BigInteger getTransformedValue(BigInteger message) {
 		return message.modPow(exponent, modulus);
 	}
 

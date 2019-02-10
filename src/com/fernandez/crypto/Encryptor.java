@@ -5,7 +5,8 @@ import java.util.Random;
 
 public class Encryptor implements Runnable {
 
-	private long defaultSeed = 23434;
+	private static final long defaultSeed = 23434;
+
 	private long seed;
 
 	private Random random;
@@ -36,18 +37,16 @@ public class Encryptor implements Runnable {
 		random = new Random(this.seed);
 	}
 
-	public void setPublicKey(Key pKey) {
-		publicKey = pKey;
-	}
-
 	private void setKey(BigInteger key, BigInteger exponent) {
 		key = exponent;
 	}
 
-	/* TODO
+	/**
+	 * TODO: refactor generateKeys()
 	 * Generates Key Pair
 	 * Returns the Public Key to share
 	 * Saves the private key for internal use
+	 *
 	 */
 	public void generateKeys() {
 		final BigInteger p = BigInteger.probablePrime(bits, random);
@@ -57,18 +56,17 @@ public class Encryptor implements Runnable {
 		final BigInteger d = e.modInverse(totient);
 		final BigInteger product = p.multiply(q);
 
-		publicKey = new PublicKey();
-		setKey(publicKey, e);
-
-		privateKey = new PrivateKey();
+		setKey(publicKey,  e);
 		setKey(privateKey, d);
 	}
 
 	private void encrypt(BigInteger message) {
-		publicKey.value(message);
+		// TODO: Re-implement encrypt()
+		// publicKey.getTransformedValue(message);
 	}
 
 	private void decrypt() {
-		privateKey.value(message);
+		// TODO: Re-implement decrypt()
+		// privateKey.getTransformedValue(message);
 	}
 }
