@@ -122,12 +122,12 @@ public class Client extends JFrame {
 
 		inputStream = new ObjectInputStream(clientSocket.getInputStream());
 
-		showMessage("[SERVER]: You are now connected.");
+		//showMessage("[SERVER]: You are now connected.");
 	}
 
 	private void activeConversation() throws IOException {
 		String message = "You are now connected.";
-		sendMessage(message + "\n");
+		sendMessage(message);
 		enableMessageTextField(true);
 
 		do {
