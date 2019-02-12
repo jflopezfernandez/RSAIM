@@ -1,28 +1,38 @@
-To Receive messages
-  Generate Public Key and Private Key
-  Send Public Key
-  Receive message
-  Decrypt message with Private Key
-To Send message
-  Receive public Key
-  Encrypt message with Public Key
-  Send message
+Thoughts for Future
 
-Open Application
-  Set Other's Public Key
-    Set exponent
-    Set modulus
-      Set flag1
-  Get Own Public Key
-    Print exponent and modulus
-      set flag2
-  Send message
-    if flag1 not set, error
-    else,
-      User types message
-      print cipher text
-  Receive message
-    if flag2 not set, error
-    else,
-      User types cipher text
-      Print message
+***Encryption***
+Server has a list of clients. The server, or at least the Client handler, should hold the client's public key
+On connection, the client should send its public key.
+
+From then on the server should encrypt all messages sent to the client and the client decrypt all incoming messages
+Does the server have its own public/private keypair? Would make it so that no unencrypted messages (other than public keys) are 
+sent. But does it slow things down too much? I'm inclined to give the server its own key pair
+
+Does the client get access to everyone's public key or only get the public key for someone when they want to send them a message? 
+They probably need to have everyone's key in order to be able to send something like "pm UserA EncryptedMessage."
+Otherwise,it should be "pm UserA" Recieve KeyA "send EncryptedMessage." Second option takes less memory on the client side but it probably a bit more complicated to handle. Currently, messages sent are independent of one another. This second method would make the second message dependant on the first. So I'm leaning option one.
+
+Encryption/Decryption Steps:
+MessageOriginator MessageRecipient Steps
+Server            UserA            Server encrypts using PubKeyA; User decrypts using PrivKeyA
+UserA             Server           UserA encrypts using PubKeyS; Server decrypts using PrivKeyS
+UserA             UserB            UserA encrypts using PubKeyB, then encrypts using PubKeyS;
+                                   Server decrypts using PrivKeyS, then encrypts using PubKeyB
+                                   UserB decrypts using PrivKeyB, UserB decrypts using PrivKeyB
+
+***Server Commands***
+What commands should the server accept and execute?
+
+Exit: Shuts down all client connection then closes the socket. Implemented (edit to Shutdown?)
+Admin [user]: makes [user] an adminstrator who can send the server commands through their client
+Kick [user]: disconnects [user]
+???
+
+***User commands***
+Help: Help menu
+Exit: close connection
+PM [USER]: Send private message to [user]
+All: Send message to all
+  This is probably complicated using RSA because each recipient needs to get their own personally encrypted message. For now, maybe 
+  this is sent for the server to read and then encrypted for each user? Or the client-end sends "pm [User] EncryptedMessage" for 
+  each user on the server (excluding self)
